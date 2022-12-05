@@ -5,47 +5,47 @@ from tgbot.config import load_config
 from tgbot.services.DataBases.DataBaseModule import mute, unmute, warn, unwarn
 
 
-# *Мут ползователя в чате по реплаю на сообщение
+# *РњСѓС‚ РїРѕР»Р·РѕРІР°С‚РµР»СЏ РІ С‡Р°С‚Рµ РїРѕ СЂРµРїР»Р°СЋ РЅР° СЃРѕРѕР±С‰РµРЅРёРµ
 async def mute_user(message: Message):
     config = load_config(".env")
     muted_user_id = message.reply_to_message.from_user.id
     muted_user_name = message.reply_to_message.from_user.username
-    if muted_user_id == message.from_user.id:  # Проверка на мут самого себя
-        await message.answer('Ты дебил, зачем себя мутить?')
-    elif message.reply_to_message.from_user.is_bot:  # Проверка на мут бота
-        await message.answer('Не, не так нельзя)')
-    elif muted_user_id in config.tg_bot.admin_ids:  # Проверка на мут админа
-        await message.answer('Не, не так нельзя, это админ)))')
+    if muted_user_id == message.from_user.id:  # РџСЂРѕРІРµСЂРєР° РЅР° РјСѓС‚ СЃР°РјРѕРіРѕ СЃРµР±СЏ
+        await message.answer('РўС‹ РґРµР±РёР», Р·Р°С‡РµРј СЃРµР±СЏ РјСѓС‚РёС‚СЊ?')
+    elif message.reply_to_message.from_user.is_bot:  # РџСЂРѕРІРµСЂРєР° РЅР° РјСѓС‚ Р±РѕС‚Р°
+        await message.answer('РќРµ, РЅРµ С‚Р°Рє РЅРµР»СЊР·СЏ)')
+    elif muted_user_id in config.tg_bot.admin_ids:  # РџСЂРѕРІРµСЂРєР° РЅР° РјСѓС‚ Р°РґРјРёРЅР°
+        await message.answer('РќРµ, РЅРµ С‚Р°Рє РЅРµР»СЊР·СЏ, СЌС‚Рѕ Р°РґРјРёРЅ)))')
     else:
         Mute = mute(message.chat.id, muted_user_id, muted_user_name)
-        if Mute:  # Проверка на уже заглушенного пользователя
+        if Mute:  # РџСЂРѕРІРµСЂРєР° РЅР° СѓР¶Рµ Р·Р°РіР»СѓС€РµРЅРЅРѕРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
             await message.bot.restrict_chat_member(message.chat.id, muted_user_id, can_send_messages=False,
                                                    can_send_media_messages=False,
                                                    can_send_other_messages=False, can_add_web_page_previews=False)
-            await message.answer(f'@{muted_user_name}, помолчи')
+            await message.answer(f'@{muted_user_name}, РїРѕРјРѕР»С‡Рё')
         else:
-            await message.answer(f'@{muted_user_name}, уже в муте и не может писать в этот чат')
+            await message.answer(f'@{muted_user_name}, СѓР¶Рµ РІ РјСѓС‚Рµ Рё РЅРµ РјРѕР¶РµС‚ РїРёСЃР°С‚СЊ РІ СЌС‚РѕС‚ С‡Р°С‚')
         del config, muted_user_id, muted_user_name
 
 
-# * Размут пользователя по реплаю на сообщение
-# ! Не удобно сделать(Добавить) размут по Id пользователя
+# * Р Р°Р·РјСѓС‚ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РїРѕ СЂРµРїР»Р°СЋ РЅР° СЃРѕРѕР±С‰РµРЅРёРµ
+# ! РќРµ СѓРґРѕР±РЅРѕ СЃРґРµР»Р°С‚СЊ(Р”РѕР±Р°РІРёС‚СЊ) СЂР°Р·РјСѓС‚ РїРѕ Id РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
 async def unmute_user(message):
     config = load_config(".env")
     unmuted_user_id = message.reply_to_message.from_user.id
     unmuted_user_name = message.reply_to_message.from_user.username
 
     unmute(message.chat.id, unmuted_user_id, unmuted_user_name)
-    if unmuted_user_id in config.tg_bot.admin_ids:  # Проверка на админа
-        await message.answer('Админ не может быть в муте)))')
+    if unmuted_user_id in config.tg_bot.admin_ids:  # РџСЂРѕРІРµСЂРєР° РЅР° Р°РґРјРёРЅР°
+        await message.answer('РђРґРјРёРЅ РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РІ РјСѓС‚Рµ)))')
     else:
         await message.bot.restrict_chat_member(message.chat.id, unmuted_user_id, can_send_messages=True,
                                                can_send_media_messages=True,
                                                can_send_other_messages=True, can_add_web_page_previews=True)
-        await message.answer(f'@{unmuted_user_name}, ты свободен')
+        await message.answer(f'@{unmuted_user_name}, С‚С‹ СЃРІРѕР±РѕРґРµРЅ')
 
 
-# * Варн пользователя по реплаю на сообщение
+# * Р’Р°СЂРЅ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РїРѕ СЂРµРїР»Р°СЋ РЅР° СЃРѕРѕР±С‰РµРЅРёРµ
 async def Warn_User(message: Message):
     config = load_config(".env")
     print(config.tg_bot.admin_ids)
@@ -53,33 +53,33 @@ async def Warn_User(message: Message):
     warnForUser_name = message.reply_to_message.from_user.username
     print(warnForUser_id)
     Warn = warn(message.chat.id, warnForUser_id, warnForUser_name)
-    if warnForUser_id == message.from_user.id:  # Проверка на варн самого себя
-        await message.answer('Ты дебил, зачем себя варнить?')
-    elif message.reply_to_message.from_user.is_bot:  # Проверка на варн бота
-        await message.answer('Не, не так нельзя)')
-    elif warnForUser_id in config.tg_bot.admin_ids:  # Проверка на варн админа
-        await message.answer('Не, не так нельзя, это админ)))')
+    if warnForUser_id == message.from_user.id:  # РџСЂРѕРІРµСЂРєР° РЅР° РІР°СЂРЅ СЃР°РјРѕРіРѕ СЃРµР±СЏ
+        await message.answer('РўС‹ РґРµР±РёР», Р·Р°С‡РµРј СЃРµР±СЏ РІР°СЂРЅРёС‚СЊ?')
+    elif message.reply_to_message.from_user.is_bot:  # РџСЂРѕРІРµСЂРєР° РЅР° РІР°СЂРЅ Р±РѕС‚Р°
+        await message.answer('РќРµ, РЅРµ С‚Р°Рє РЅРµР»СЊР·СЏ)')
+    elif warnForUser_id in config.tg_bot.admin_ids:  # РџСЂРѕРІРµСЂРєР° РЅР° РІР°СЂРЅ Р°РґРјРёРЅР°
+        await message.answer('РќРµ, РЅРµ С‚Р°Рє РЅРµР»СЊР·СЏ, СЌС‚Рѕ Р°РґРјРёРЅ)))')
     else:
         if Warn == -1:
             await mute_user(message)
-            await message.answer(f'@{warnForUser_name} ты получил(а) 3 предупреждения и больше не '
-                                 f'можешь '
-                                 f'писать в этот чат ')
+            await message.answer(f'@{warnForUser_name} С‚С‹ РїРѕР»СѓС‡РёР»(Р°) 3 РїСЂРµРґСѓРїСЂРµР¶РґРµРЅРёСЏ Рё Р±РѕР»СЊС€Рµ РЅРµ '
+                                 f'РјРѕР¶РµС€СЊ '
+                                 f'РїРёСЃР°С‚СЊ РІ СЌС‚РѕС‚ С‡Р°С‚ ')
         else:
-            await message.answer(f'@{warnForUser_name} у тебя {Warn} Предупреждений')
+            await message.answer(f'@{warnForUser_name} Сѓ С‚РµР±СЏ {Warn} РџСЂРµРґСѓРїСЂРµР¶РґРµРЅРёР№')
     del Warn, warnForUser_id, warnForUser_name, config
 
 
-# * снятие всех варнов м пользователя по реплаю на сообщение (Не эфективно)
+# * СЃРЅСЏС‚РёРµ РІСЃРµС… РІР°СЂРЅРѕРІ Рј РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РїРѕ СЂРµРїР»Р°СЋ РЅР° СЃРѕРѕР±С‰РµРЅРёРµ (РќРµ СЌС„РµРєС‚РёРІРЅРѕ)
 async def unWarn_User(message: Message):
     config = load_config(".env")
     unwarnForUser_id = message.reply_to_message.from_user.id
     unwarnForUser_name = message.reply_to_message.from_user.username
     unwarn(message.chat.id, unwarnForUser_id, unwarnForUser_name)
-    if unwarnForUser_id in config.tg_bot.admin_ids:  # Проверка на админа
-        await message.answer('У админа не может быть warn\'ов)))')
+    if unwarnForUser_id in config.tg_bot.admin_ids:  # РџСЂРѕРІРµСЂРєР° РЅР° Р°РґРјРёРЅР°
+        await message.answer('РЈ Р°РґРјРёРЅР° РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ warn\'РѕРІ)))')
     else:
-        await message.answer(f'@{unwarnForUser_name} Все предуреждения с тебя сняты) ')
+        await message.answer(f'@{unwarnForUser_name} Р’СЃРµ РїСЂРµРґСѓСЂРµР¶РґРµРЅРёСЏ СЃ С‚РµР±СЏ СЃРЅСЏС‚С‹) ')
 
 
 def register_admin(dp: Dispatcher):
