@@ -10,9 +10,9 @@ from tgbot.filters.admin import AdminFilter
 from tgbot.handlers.NewMember import register_new_user
 from tgbot.handlers.NewChat import register_newChat
 from tgbot.handlers.privateChats.admin import register_admin_on_private
+from tgbot.handlers.admin import register_admin
 from tgbot.handlers.user import register_user
-from tgbot.handlers.WarnWords import register_ban_words
-
+from tgbot.handlers.BarnWords import register_ban_words
 
 from tgbot.middlewares.environment import EnvironmentMiddleware
 
@@ -32,9 +32,11 @@ def register_all_filters(dp):
 
 
 def register_all_handlers(dp):
+
     register_newChat(dp)
     register_new_user(dp)
     register_admin_on_private(dp)
+    register_admin(dp)
     register_user(dp)
     register_ban_words(dp)
 
